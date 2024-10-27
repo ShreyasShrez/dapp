@@ -22,12 +22,12 @@ jobs:
         run: |
           npm install
           npm install -g truffle  # or any other framework you're using
+      
+      - name: Install specific version of solc
+        run: npm install solc@0.8.19
 
       - name: Run Tests
         run: truffle test  # or npx hardhat test
-
-      - name: Install specific version of solc
-        run: npm install solc@0.8.19
 
       # - name: Analyze Security
       #   run: |
