@@ -10,28 +10,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '22.0.0'  # Specify your desired Node.js version
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22.0.0'  # or any version you need
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install -g truffle  # or any other framework you're using
+      
+      - name: Install specific version of solc
+        run: npm install solc@0.8.19
 
-    # - name: Run tests
-    #   run: npm test
+      - name: Run Tests
+        run: truffle migrate --network development  # or npx hardhat test
 
-    - name: Deploy to local network
-      run: |
-        # Start your local blockchain node (if necessary)
-        # You may need to adjust the command based on your setup
-        ganache-cli -p 22001 -h 0.0.0.0 &
-
-        # Wait for the blockchain node to be ready
-        sleep 10  # Adjust time as needed
-
-        # Deploy your contract
-        npx truffle migrate --network development
+      # - name: Analyze Security
+      #   run: |
+      #     npm install -g slither
+      #     slither .  # or any other security tool command
