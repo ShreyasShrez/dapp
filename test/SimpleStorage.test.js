@@ -1,9 +1,19 @@
 const SimpleStorage = artifacts.require("SimpleStorage");
 
-contract("SimpleStorage", () => {
-    it("should store the value 89.", async () => {
-        const simpleStorageInstance = await SimpleStorage.deployed();
+module.exports = function (deployer) {
+    deployer.deploy(SimpleStorage);
+};
 
+
+contract("SimpleStorage", () => {
+    let simpleStorageInstance;
+
+    before(async () => {
+        // Deploy the contract instance before tests
+        simpleStorageInstance = await SimpleStorage.deployed();
+    });
+
+    it("should store the value 89.", async () => {
         // Set value
         await simpleStorageInstance.set(89);
 
