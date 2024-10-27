@@ -9,6 +9,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      ganache:
+        image: trufflesuite/ganache-cli
+        ports:
+          - 22001:8545
+        options: >-
+          --networkId 5777
+          --host 0.0.0.0
+          --port 8545
+          --seed "your_seed_here"  # Optional: use a specific seed for consistent account addresses
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -16,20 +27,17 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '22'  # or any version you need
+          node-version: '22.0.0'
 
       - name: Install dependencies
-        run: |
-          npm install
-          npm install -g truffle  # or any other framework you're using
-      
+        run: npm install
+
       - name: Install specific version of solc
         run: npm install solc@0.8.19
 
-      - name: Run Tests
-        run: truffle test  # or npx hardhat test
-
-      # - name: Analyze Security
-      #   run: |
-      #     npm install -g slither
-      #     slither .  # or any other security tool command
+      - name: Run tests
+        env:
+          NETWORK_URL: http://127.0.0.1:22001  # Set the URL to connect to Ganache
+        run: |
+          truffle migrate --network development
+          truffle test --network development
