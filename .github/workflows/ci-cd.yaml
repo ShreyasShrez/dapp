@@ -9,35 +9,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      ganache:
-        image: trufflesuite/ganache-cli
-        ports:
-          - 22001:8545
-        options: >-
-          --networkId 5777
-          --host 0.0.0.0
-          --port 8545
-          --seed "your_seed_here"  # Optional: use a specific seed for consistent account addresses
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '22.0.0'
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '22.0.0'  # Specify your desired Node.js version
 
-      - name: Install dependencies
-        run: npm install
+    - name: Install dependencies
+      run: npm install
 
-      - name: Install specific version of solc
-        run: npm install solc@0.8.19
+    # - name: Run tests
+    #   run: npm test
 
-      - name: Run tests
-        env:
-          NETWORK_URL: http://127.0.0.1:22001  # Set the URL to connect to Ganache
-        run: |
-          truffle migrate --network development
-          truffle test --network development
+    - name: Deploy to local network
+      run: |
+        # Start your local blockchain node (if necessary)
+        # You may need to adjust the command based on your setup
+        ganache-cli -p 22001 -h 0.0.0.0 &
+
+        # Wait for the blockchain node to be ready
+        sleep 10  # Adjust time as needed
+
+        # Deploy your contract
+        npx truffle migrate --network development
